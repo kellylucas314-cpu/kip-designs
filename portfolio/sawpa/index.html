@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Santa Ana River Watershed Cloud Seeding Pilot Program — SAWPA's four-year study to evaluate precipitation enhancement through atmospheric science.">
+  <title>Cloud Seeding Pilot Program — SAWPA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:     #06090F;
+      --bg2:    #090D16;
+      --bg3:    #0C1220;
+      --white:  #E8EDF5;
+      --muted:  #5E7490;
+      --silver: #8BBBD6;
+      --accent: #4BA8D8;
+      --border: rgba(255,255,255,0.055);
+      --serif:  'Cormorant Garamond', Georgia, serif;
+      --sans:   'Inter', system-ui, sans-serif;
+    }
+    html { overflow-x: hidden; scroll-behavior: auto; }
+    body { background: var(--bg); color: var(--white); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
+
+    /* ─── CURSOR ─── */
+    .cdot { position: fixed; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); box-shadow: 0 0 8px var(--accent); transition: width .2s, height .2s; }
+    .cdot.big { width: 10px; height: 10px; }
+    @media (pointer: coarse) { .cdot, .energy-blob { display: none; } body { cursor: auto; } }
+
+    /* ─── GLOW BLOB ─── */
+    .atmos-blob { position: fixed; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(75,168,216,0.06) 0%, transparent 65%); pointer-events: none; z-index: 1; top: 0; left: 0; will-change: transform; }
+
+    /* ─── STATUS BANNER ─── */
+    .status-banner { background: rgba(75,168,216,.08); border-bottom: 1px solid rgba(75,168,216,.18); padding: 14px 56px; font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.6; }
+    .status-banner strong { color: var(--accent); font-weight: 500; }
+    .status-banner a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ─── NAV ─── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 28px 56px; transition: background .5s, padding .4s; border-bottom: 1px solid transparent; }
+    nav.scrolled { background: rgba(6,9,15,.92); backdrop-filter: blur(24px); padding: 16px 56px; border-bottom-color: var(--border); }
+    .logo { display: flex; flex-direction: column; line-height: 1; }
+    .logo-main { font-family: var(--serif); font-size: 18px; font-weight: 400; letter-spacing: .06em; }
+    .logo-sub { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); text-decoration: none; transition: color .3s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { padding: 8px 22px; border: 1px solid rgba(75,168,216,.3); color: var(--accent); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; transition: all .3s; }
+    .nav-cta:hover { background: rgba(75,168,216,.08); }
+
+    /* ─── HERO ─── */
+    .hero { position: relative; height: 100vh; min-height: 640px; display: flex; flex-direction: column; justify-content: flex-end; padding: 80px 56px; overflow: hidden; }
+    #hero-canvas { position: absolute; inset: 0; z-index: 0; }
+    .hero-photo { position: absolute; inset: 0; z-index: 1; background-image: url('https://images.unsplash.com/photo-1504253163759-c23fccaebb55?auto=format&fit=crop&w=1800&q=80'); background-size: cover; background-position: center; opacity: 0.4; }
+    .hero-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(to top, rgba(6,9,15,.97) 0%, rgba(6,9,15,.45) 55%, rgba(6,9,15,.15) 100%); }
+    .hero-content { position: relative; z-index: 3; max-width: 820px; }
+    .hero-eyebrow { font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; opacity: 0; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(52px, 7.5vw, 100px); font-weight: 300; line-height: 1.0; color: var(--white); margin-bottom: 28px; opacity: 0; }
+    .hero h1 em { font-style: italic; color: var(--silver); }
+    .hero-sub { font-size: 17px; color: rgba(255,255,255,.55); line-height: 1.82; max-width: 520px; margin-bottom: 44px; font-weight: 300; opacity: 0; }
+    .hero-actions { display: flex; gap: 16px; align-items: center; opacity: 0; }
+    .btn-accent { padding: 13px 36px; background: var(--accent); color: #06090F; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; font-weight: 500; transition: all .3s; display: inline-block; }
+    .btn-accent:hover { background: #5DBDE8; transform: translateY(-1px); }
+    .btn-ghost { font-size: 13px; color: rgba(255,255,255,.5); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.18); padding-bottom: 2px; letter-spacing: .04em; transition: all .3s; }
+    .btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,.45); }
+    .scroll-cue { position: absolute; bottom: 36px; right: 56px; z-index: 3; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,.3); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 2.2s forwards; }
+    .scroll-line { width: 44px; height: 1px; background: linear-gradient(to right, var(--accent), transparent); }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ─── STATS STRIP ─── */
+    .stats-strip { display: grid; grid-template-columns: repeat(4,1fr); background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stat { padding: 40px 32px; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-family: var(--serif); font-size: 44px; font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 12px; color: var(--muted); line-height: 1.65; }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity .9s ease, transform .9s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ─── SECTIONS ─── */
+    .section { padding: 130px 56px; max-width: 1200px; margin: 0 auto; }
+    .section-bg { background: var(--bg2); }
+    .section-bg .inner { max-width: 1200px; margin: 0 auto; padding: 130px 56px; }
+    .eyebrow { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 22px; }
+    h2 { font-family: var(--serif); font-size: clamp(36px, 4.2vw, 58px); font-weight: 300; line-height: 1.1; margin-bottom: 28px; }
+    h2 em { font-style: italic; }
+    .lead { font-size: 16px; color: var(--muted); line-height: 1.9; font-weight: 300; }
+
+    /* ─── ABOUT ─── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .about-img img { width: 100%; height: 420px; object-fit: cover; display: block; }
+    .about-quote { margin-top: 28px; padding: 24px; border-left: 2px solid rgba(75,168,216,.2); background: rgba(75,168,216,.03); }
+    .about-quote p { font-family: var(--serif); font-size: 16px; font-style: italic; color: rgba(255,255,255,.65); line-height: 1.65; }
+    .about-quote cite { display: block; font-size: 11px; color: var(--muted); font-style: normal; letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
+
+    /* ─── HOW IT WORKS ─── */
+    .steps4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; background: var(--border); margin-top: 64px; }
+    .step-block { background: var(--bg2); padding: 48px 32px; }
+    .step-n { font-family: var(--serif); font-size: 80px; font-weight: 300; color: var(--accent); opacity: .1; line-height: 1; margin-bottom: 20px; }
+    .step-block h3 { font-size: 15px; font-weight: 500; margin-bottom: 12px; line-height: 1.35; }
+    .step-block p { font-size: 13px; color: var(--muted); line-height: 1.85; font-weight: 300; }
+    .step-arrow { display: none; }
+
+    /* ─── TARGET AREAS ─── */
+    .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .target-map { position: relative; }
+    .target-map img { width: 100%; display: block; }
+    .target-map figcaption { padding: 14px 0; font-size: 12px; color: var(--muted); font-style: italic; line-height: 1.6; }
+    .target-zones { display: flex; flex-direction: column; gap: 2px; }
+    .zone { padding: 24px 28px; background: var(--bg3); border-left: 2px solid transparent; transition: border-color .3s, background .3s; }
+    .zone:hover { border-left-color: var(--accent); background: rgba(75,168,216,.03); }
+    .zone-num { font-family: var(--serif); font-size: 36px; font-weight: 300; color: var(--accent); opacity: .35; line-height: 1; margin-bottom: 4px; }
+    .zone-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .zone-detail { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    /* ─── EQUIPMENT ─── */
+    .equip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); margin-top: 56px; }
+    .equip-card { background: var(--bg2); padding: 52px 44px; }
+    .equip-tag { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; background: var(--accent); color: var(--bg); padding: 3px 10px; display: inline-block; margin-bottom: 24px; font-weight: 500; }
+    .equip-card h3 { font-family: var(--serif); font-size: 28px; font-weight: 300; margin-bottom: 8px; }
+    .equip-card .equip-abbr { font-size: 11px; letter-spacing: .1em; color: var(--muted); margin-bottom: 22px; }
+    .equip-card p { font-size: 14px; color: var(--muted); line-height: 1.85; margin-bottom: 24px; font-weight: 300; }
+    .equip-features { list-style: none; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--border); padding-top: 24px; }
+    .equip-features li { font-size: 13px; color: rgba(255,255,255,.65); padding-left: 16px; position: relative; }
+    .equip-features li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 11px; }
+
+    /* ─── SAFETY QUOTES ─── */
+    .quotes3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--border); margin-top: 56px; }
+    .qblock { background: var(--bg2); padding: 48px 36px; }
+    .q-text { font-family: var(--serif); font-size: 18px; font-style: italic; font-weight: 300; color: rgba(255,255,255,.8); line-height: 1.55; margin-bottom: 24px; }
+    .q-source { font-size: 11px; letter-spacing: .08em; color: var(--accent); text-transform: uppercase; border-top: 1px solid var(--border); padding-top: 18px; }
+
+    /* ─── RESULTS ─── */
+    .results-banner { background: rgba(75,168,216,.05); border: 1px solid rgba(75,168,216,.14); padding: 48px; margin-bottom: 56px; }
+    .results-label { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .results-banner h3 { font-family: var(--serif); font-size: 28px; font-weight: 300; margin-bottom: 18px; }
+    .results-banner p { font-size: 15px; color: var(--muted); line-height: 1.85; font-weight: 300; max-width: 680px; }
+    .results-banner p + p { margin-top: 14px; }
+    .results-banner a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ─── RESOURCES ─── */
+    .resources-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--border); margin-top: 56px; }
+    .resource-card { background: var(--bg2); padding: 32px 28px; text-decoration: none; display: block; transition: background .3s; }
+    .resource-card:hover { background: rgba(75,168,216,.04); }
+    .resource-icon { font-size: 22px; margin-bottom: 14px; opacity: .5; }
+    .resource-type { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .resource-title { font-size: 14px; color: var(--white); line-height: 1.5; margin-bottom: 14px; }
+    .resource-arrow { font-size: 12px; color: rgba(75,168,216,.5); letter-spacing: .08em; }
+
+    /* ─── CONTACT ─── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
+    .contact-info p { font-size: 15px; color: var(--muted); line-height: 1.9; margin-bottom: 24px; font-weight: 300; }
+    .contact-phone { font-family: var(--serif); font-size: 28px; color: var(--accent); margin-bottom: 8px; text-decoration: none; display: block; }
+    .contact-phone:hover { color: var(--silver); }
+    .contact-tel-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    input, textarea { background: var(--bg3); border: 1px solid var(--border); color: var(--white); padding: 14px 16px; font-size: 14px; font-family: var(--sans); outline: none; transition: border-color .3s; width: 100%; }
+    input:focus, textarea:focus { border-color: rgba(75,168,216,.4); }
+    textarea { resize: vertical; min-height: 120px; }
+    .form-check { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--bg3); border: 1px solid var(--border); }
+    .form-check input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+    .form-check-label { font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .btn-submit { padding: 14px 40px; background: var(--accent); color: var(--bg); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; border: none; cursor: pointer; transition: all .3s; align-self: flex-start; font-family: var(--sans); }
+    .btn-submit:hover { background: #5DBDE8; transform: translateY(-1px); }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 56px 56px 40px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 52px; }
+    .f-name { font-family: var(--serif); font-size: 19px; margin-bottom: 8px; }
+    .f-full { font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 20px; }
+    .f-address { font-size: 13px; color: var(--muted); line-height: 1.9; }
+    .f-col h4 { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--white); margin-bottom: 18px; }
+    .f-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .f-col a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .f-col a:hover { color: var(--white); }
+    .f-bottom { background: var(--bg2); border-top: 1px solid var(--border); padding: 18px 56px; display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,.15); flex-wrap: wrap; gap: 8px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; } nav.scrolled { padding: 14px 24px; }
+      .nav-links { display: none; }
+      .status-banner { padding: 12px 24px; }
+      .hero { padding: 60px 24px; }
+      .section { padding: 80px 24px; }
+      .section-bg .inner { padding: 80px 24px; }
+      .about-grid, .target-grid, .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .steps4 { grid-template-columns: 1fr 1fr; }
+      .equip-grid, .quotes3 { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: repeat(2,1fr); }
+      .resources-grid { grid-template-columns: 1fr 1fr; }
+      footer { grid-template-columns: 1fr; padding: 48px 24px; gap: 36px; }
+      .f-bottom { padding: 16px 24px; }
+    }
+    @media (max-width: 540px) {
+      .steps4 { grid-template-columns: 1fr; }
+      .resources-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cdot" id="cdot"></div>
+<div class="atmos-blob" id="blob"></div>
+
+<!-- STATUS BANNER -->
+<div class="status-banner" style="margin-top:0;position:relative;z-index:201">
+  <strong>Program Update:</strong> After a year of study, SAWPA concluded its cloud seeding pilot program in 2025. A validation report found little evidence that the program increased precipitation. Wildfire burn scars in the region also contributed to the decision. <a href="https://sawpa.gov/wp-content/uploads/2025/07/SAWPA-Santa_Ana_Validation_Report-1.3_final_compress.pdf" target="_blank" rel="noopener">Read the full validation report →</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">
+    <span class="logo-main">SAWPA</span>
+    <span class="logo-sub">Santa Ana Watershed Project Authority</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#areas">Target Areas</a></li>
+    <li><a href="#safety">Safety</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Contact</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <!--
+    REPLACE: Photo of storm clouds over the San Bernardino mountains
+    OR: Snow-covered mountains in Southern California
+    OR: Silver iodide smoke plume rising into clouds
+  -->
+  <div class="hero-photo"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" id="he">Santa Ana River Watershed · 2023–2027</p>
+    <h1 id="hh">Teaching<br>clouds<br>to <em>rain.</em></h1>
+    <p class="hero-sub" id="hs">A four-year scientific pilot program to evaluate whether silver iodide seeding can increase precipitation across the Santa Ana River Watershed — and what it means for Southern California's water future.</p>
+    <div class="hero-actions" id="ha">
+      <a href="#how" class="btn-accent">How It Works</a>
+      <a href="#resources" class="btn-ghost">View pilot reports →</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="scroll-line"></div>Scroll to explore</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat reveal"><div class="stat-num">5–15%</div><div class="stat-label">Projected precipitation<br>increase potential</div></div>
+  <div class="stat reveal"><div class="stat-num">15</div><div class="stat-label">Ground-based seeding<br>stations deployed</div></div>
+  <div class="stat reveal"><div class="stat-num">4</div><div class="stat-label">Target mountain<br>regions in watershed</div></div>
+  <div class="stat reveal"><div class="stat-num">4 yrs</div><div class="stat-label">Pilot program duration<br>Nov 2023 – Apr 2027</div></div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section class="section" id="about">
+  <div class="about-grid">
+    <div class="reveal">
+      <p class="eyebrow">About Cloud Seeding</p>
+      <h2>Precipitation<br>is not<br><em>entirely accidental.</em></h2>
+      <p class="lead" style="margin-bottom:20px">Cloud seeding is a form of weather modification that increases precipitation by introducing silver iodide particles into clouds during storm conditions. The particles give supercooled water droplets something to freeze around — accelerating the formation of snow and rain.</p>
+      <p class="lead">The technology has been in use for over 70 years. Southern California has a proven 40-year track record in Santa Barbara County alone.</p>
+      <div class="about-quote" style="margin-top:36px">
+        <p>"The practice of precipitation enhancement in Santa Barbara County has been used for over 40 years and has proven to be a cost effective and positive addition to our water resources management goals."</p>
+        <cite>Matthew Scrudato, Senior Hydrologist — Santa Barbara County</cite>
+      </div>
+    </div>
+    <div class="about-img reveal">
+      <!--
+        REPLACE: Photo of storm approaching the San Gabriel mountains
+        OR: Silver iodide smoke plume / CNG equipment in field
+      -->
+      <img
+        src="https://images.unsplash.com/photo-1516912481808-3406841bd33c?auto=format&fit=crop&w=800&q=80"
+        alt="Storm clouds over mountain terrain — replace with actual watershed imagery"
+        onerror="this.parentElement.style.background='#0C1220';this.style.display='none'"
+      >
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<div class="section-bg" id="how">
+  <div class="inner">
+    <p class="eyebrow reveal">The Process</p>
+    <h2 class="reveal">Four steps from<br>cloud to <em>snowpack.</em></h2>
+    <div class="steps4">
+      <div class="step-block reveal">
+        <div class="step-n">01</div>
+        <h3>Storms Arrive</h3>
+        <p>Winter storms move into the watershed, carrying moist Pacific air over the mountains. Clouds form as the air cools, composed of supercooled water droplets sitting just above freezing — primed to crystallize.</p>
+      </div>
+      <div class="step-block reveal">
+        <div class="step-n">02</div>
+        <h3>Seeding Begins</h3>
+        <p>Ground-based seeding stations vaporize a solution of silver iodide and acetone, releasing an invisible plume of particles into the atmosphere. Orographic winds carry them upward into the target cloud deck.</p>
+      </div>
+      <div class="step-block reveal">
+        <div class="step-n">03</div>
+        <h3>Ice Crystals Form</h3>
+        <p>Silver iodide has a crystal structure nearly identical to ice. When particles enter the cold upper atmosphere, water vapor condenses and freezes onto them — creating ice crystals that wouldn't have formed otherwise.</p>
+      </div>
+      <div class="step-block reveal">
+        <div class="step-n">04</div>
+        <h3>Precipitation Falls</h3>
+        <p>Ice crystals grow progressively larger as vapor continues to deposit. Snowflakes form, accumulate mass, and eventually fall. Enhanced snowpack accumulates through winter, replenishing the watershed as it melts in spring.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TARGET AREAS ═══ -->
+<section class="section" id="areas">
+  <div class="target-grid">
+    <div class="reveal">
+      <p class="eyebrow">Targeted Regions</p>
+      <h2>Four mountain<br>zones. One<br><em>watershed.</em></h2>
+      <p class="lead" style="margin-bottom:36px">SAWPA analyzed decades of storm events and seasonal runoff data to identify four distinct mountain regions contributing most significantly to the Santa Ana River's flow. Each zone is served by ground-based seeding sites selected for maximum orographic effectiveness.</p>
+      <div class="target-zones">
+        <div class="zone">
+          <div class="zone-num">01</div>
+          <div class="zone-name">San Bernardino Mountains</div>
+          <div class="zone-detail">Primary snowpack contributor for upper watershed flows</div>
+        </div>
+        <div class="zone">
+          <div class="zone-num">02</div>
+          <div class="zone-name">San Gabriel Mountains</div>
+          <div class="zone-detail">Critical runoff zone for Los Angeles and San Bernardino basins</div>
+        </div>
+        <div class="zone">
+          <div class="zone-num">03</div>
+          <div class="zone-name">San Jacinto Mountains</div>
+          <div class="zone-detail">Southeastern watershed contributor, Riverside County recharge</div>
+        </div>
+        <div class="zone">
+          <div class="zone-num">04</div>
+          <div class="zone-name">Santa Ana Mountains</div>
+          <div class="zone-detail">Southern watershed boundary, Orange County groundwater recharge</div>
+        </div>
+      </div>
+    </div>
+    <div class="target-map reveal">
+      <!--
+        Using SAWPA's actual watershed map — replace with high-res version if available
+      -->
+      <img src="https://sawpa.gov/wp-content/uploads/2024/06/SAWPA-Cloud-Seeding-Map.jpg" alt="Santa Ana River Watershed Cloud Seeding Target Areas Map" style="width:100%;display:block;" onerror="this.style.background='#0C1220';this.style.display='none'">
+      <figcaption>15 ground seeding locations across four target mountain zones. Map: SAWPA / North American Weather Consultants.</figcaption>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EQUIPMENT ═══ -->
+<div class="section-bg">
+  <div class="inner">
+    <p class="eyebrow reveal">Ground-Based Equipment</p>
+    <h2 class="reveal">Two delivery systems.<br><em>One goal.</em></h2>
+    <div class="equip-grid">
+      <div class="equip-card reveal">
+        <div class="equip-tag">CNG</div>
+        <h3>Cloud Nuclei Generators</h3>
+        <div class="equip-abbr">Manually Operated · Continuous Burn</div>
+        <p>CNGs burn a solution of silver iodide and acetone, creating a continuous plume of seeding material that disperses broadly across mountainous terrain. Best suited for steady orographic conditions where consistent coverage over a large area is the priority.</p>
+        <ul class="equip-features">
+          <li>Ideal for orographic lift — winds deflected by terrain</li>
+          <li>Creates a wide, continuous plume</li>
+          <li>Low installation and operating cost</li>
+          <li>Proven in decades of program use worldwide</li>
+        </ul>
+      </div>
+      <div class="equip-card reveal">
+        <div class="equip-tag" style="background:var(--bg3);color:var(--accent);border:1px solid rgba(75,168,216,.25)">AHOGS</div>
+        <h3>Automated High Output Ground Seeding</h3>
+        <div class="equip-abbr">Remote-Controlled · Flare-Based</div>
+        <p>AHOGS systems use burn-in-place flares triggered remotely, releasing a high concentration of silver iodide over a short, precise window. Designed for convective storm conditions — where turbulence and rapid dynamics require a targeted burst rather than a sustained plume.</p>
+        <ul class="equip-features">
+          <li>Ideal for convective, turbulent storm events</li>
+          <li>Delivers higher silver iodide concentration</li>
+          <li>Rapid remote deployment with no field personnel required</li>
+          <li>Precise timing for dynamic storm windows</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SAFETY ═══ -->
+<section class="section" id="safety">
+  <p class="eyebrow reveal">Environmental Safety</p>
+  <h2 class="reveal">Decades of use.<br><em>Negligible risk.</em></h2>
+  <p class="lead reveal" style="max-width:680px;margin-bottom:0">Silver iodide has been studied extensively as an environmental agent. The scientific consensus across independent research, state agencies, and weather modification organizations is consistent: at concentrations used in cloud seeding programs, it poses no meaningful risk to human health, wildlife, or ecosystems.</p>
+  <div class="quotes3" style="margin-top:56px">
+    <div class="qblock reveal">
+      <div class="q-text">"Cloud seeding is a safe and effective means of augmenting local water supplies."</div>
+      <div class="q-source">California Department of Water Resources</div>
+    </div>
+    <div class="qblock reveal">
+      <div class="q-text">"Research has clearly documented that cloud seeding with silver-iodide aerosols shows no environmentally harmful effect."</div>
+      <div class="q-source">North American Weather Modification Council</div>
+    </div>
+    <div class="qblock reveal">
+      <div class="q-text">"Water in a cloud deck can remain liquid until it reaches temperatures as low as 5°F — introducing a nucleating agent enhances the natural snowflake formation process."</div>
+      <div class="q-source">Pacific Northwest National Laboratory</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VALIDATION & RESULTS ═══ -->
+<div class="section-bg">
+  <div class="inner" id="validation">
+    <p class="eyebrow reveal">Pilot Program Validation</p>
+    <h2 class="reveal">What the science<br>actually <em>found.</em></h2>
+    <div class="results-banner reveal">
+      <div class="results-label">Program Status — Concluded 2025</div>
+      <h3>The pilot program has ended.</h3>
+      <p>After a year of active seeding and validation analysis, SAWPA concluded the Santa Ana River Watershed Cloud Seeding Pilot Program. The decision was based on a formal validation report conducted by the Desert Research Institute (DRI), a nonprofit research arm of the Nevada System of Higher Education.</p>
+      <p>The report found <strong style="color:var(--white);font-weight:400">little evidence that the program increased precipitation</strong> in the target areas. Additionally, the presence of wildfire burn scars throughout the region introduced confounding variables that affected the scientific reliability of the study.</p>
+      <p>This outcome reflects the rigorous, evidence-first approach SAWPA committed to at the program's outset — the goal was always to let the science decide.</p>
+      <p style="margin-top:22px"><a href="https://sawpa.gov/wp-content/uploads/2025/07/SAWPA-Santa_Ana_Validation_Report-1.3_final_compress.pdf" target="_blank" rel="noopener">Read the full validation report (PDF) →</a></p>
+    </div>
+    <p class="lead reveal">The validation used a target-and-control methodology: comparing the four seeded mountain zones against unaffected control areas across multiple storm events. This independent approach, contracted through DRI, was designed to provide the most defensible scientific assessment possible.</p>
+  </div>
+</div>
+
+<!-- ═══ RESOURCES ═══ -->
+<section class="section" id="resources">
+  <p class="eyebrow reveal">Program Documents</p>
+  <h2 class="reveal">Everything<br>on the <em>record.</em></h2>
+  <div class="resources-grid">
+    <a href="https://sawpa.gov/wp-content/uploads/2025/07/SAWPA-Santa_Ana_Validation_Report-1.3_final_compress.pdf" target="_blank" rel="noopener" class="resource-card reveal">
+      <div class="resource-icon">📄</div>
+      <div class="resource-type">Validation Report · 2025</div>
+      <div class="resource-title">Cloud Seeding Validation Report — Desert Research Institute</div>
+      <div class="resource-arrow">Download PDF ↗</div>
+    </a>
+    <a href="https://sawpa.gov/wp-content/uploads/2021/07/NAWC-Final-Feasibility-Report.pdf" target="_blank" rel="noopener" class="resource-card reveal">
+      <div class="resource-icon">📋</div>
+      <div class="resource-type">Feasibility Study · 2020</div>
+      <div class="resource-title">Feasibility Study Final Report — North American Weather Consultants</div>
+      <div class="resource-arrow">Download PDF ↗</div>
+    </a>
+    <a href="https://sawpa.gov/wp-content/uploads/2024/06/SAWPA-Cloud-Seeding_Brochure.pdf" target="_blank" rel="noopener" class="resource-card reveal">
+      <div class="resource-icon">📑</div>
+      <div class="resource-type">Program Overview</div>
+      <div class="resource-title">SAWPA Cloud Seeding Program Informational Brochure</div>
+      <div class="resource-arrow">Download PDF ↗</div>
+    </a>
+    <a href="https://sawpa.gov/wp-content/uploads/2024/06/SAWPA-Cloud-Seeding_Frequently-Asked-Questions.pdf" target="_blank" rel="noopener" class="resource-card reveal">
+      <div class="resource-icon">❓</div>
+      <div class="resource-type">FAQ</div>
+      <div class="resource-title">Cloud Seeding Frequently Asked Questions</div>
+      <div class="resource-arrow">Download PDF ↗</div>
+    </a>
+    <a href="https://sawpa.gov/wp-content/uploads/2024/06/SAWPA-Weather_Modification-Fact_Sheet.pdf" target="_blank" rel="noopener" class="resource-card reveal">
+      <div class="resource-icon">📊</div>
+      <div class="resource-type">Fact Sheet</div>
+      <div class="resource-title">Santa Ana River Cloud Seeding Fact Sheet</div>
+      <div class="resource-arrow">Download PDF ↗</div>
+    </a>
+    <a href="https://sawpa.gov/wp-content/uploads/2022/06/SAWPA-CEQA-IS-MND-FINAL.pdf" target="_blank" rel="noopener" class="resource-card reveal">
+      <div class="resource-icon">⚖️</div>
+      <div class="resource-type">CEQA · Environmental Review</div>
+      <div class="resource-title">Initial Study & Mitigated Negative Declaration (IS/MND)</div>
+      <div class="resource-arrow">Download PDF ↗</div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<div class="section-bg" id="contact">
+  <div class="inner">
+    <div class="contact-grid">
+      <div class="reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Get in<br><em>touch.</em></h2>
+        <p class="contact-info">For more information about the pilot program, to request a presentation, or to join the mailing list for future updates, reach out below or call the program hotline directly.</p>
+        <a href="tel:9512895440" class="contact-phone">(951) 289-5440</a>
+        <div class="contact-tel-label">Cloud Seeding Program Hotline</div>
+        <div style="margin-top:36px;padding:24px;border-left:2px solid rgba(75,168,216,.18);background:rgba(75,168,216,.03)">
+          <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Office</div>
+          <div style="font-size:14px;color:var(--white);line-height:1.75">Santa Ana Watershed Project Authority<br>11615 Sterling Avenue<br>Riverside, CA 92503<br><br>Monday–Thursday: 8am–5pm</div>
+        </div>
+      </div>
+      <form class="reveal" onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fn">First Name</label>
+            <input type="text" id="fn" placeholder="Jane">
+          </div>
+          <div class="form-group">
+            <label for="ln">Last Name</label>
+            <input type="text" id="ln" placeholder="Smith">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="em">Email Address</label>
+          <input type="email" id="em" placeholder="jane@example.com">
+        </div>
+        <div class="form-group">
+          <label for="org">Organization</label>
+          <input type="text" id="org" placeholder="City of Riverside">
+        </div>
+        <div class="form-group">
+          <label for="msg">Message</label>
+          <textarea id="msg" placeholder="What can we help you with?"></textarea>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="ml">
+          <label for="ml" class="form-check-label">Add me to the SAWPA Cloud Seeding Pilot Program mailing list for future program updates and research findings.</label>
+        </div>
+        <button type="submit" class="btn-submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="f-name">SAWPA</div>
+    <div class="f-full">Santa Ana Watershed Project Authority</div>
+    <div class="f-address">11615 Sterling Avenue<br>Riverside, CA 92503<br>Phone: <a href="tel:9513544220" style="color:var(--accent);text-decoration:none">951.354.4220</a></div>
+  </div>
+  <div class="f-col">
+    <h4>Program</h4>
+    <ul>
+      <li><a href="#about">About Cloud Seeding</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#areas">Target Areas</a></li>
+      <li><a href="#safety">Safety</a></li>
+      <li><a href="#validation">Validation Results</a></li>
+    </ul>
+  </div>
+  <div class="f-col">
+    <h4>Documents</h4>
+    <ul>
+      <li><a href="https://sawpa.gov/wp-content/uploads/2025/07/SAWPA-Santa_Ana_Validation_Report-1.3_final_compress.pdf" target="_blank">Validation Report ↗</a></li>
+      <li><a href="https://sawpa.gov/wp-content/uploads/2021/07/NAWC-Final-Feasibility-Report.pdf" target="_blank">Feasibility Study ↗</a></li>
+      <li><a href="https://sawpa.gov/wp-content/uploads/2024/06/SAWPA-Cloud-Seeding_Brochure.pdf" target="_blank">Brochure ↗</a></li>
+      <li><a href="https://sawpa.gov" target="_blank">SAWPA.gov ↗</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="f-bottom">
+  <span>© 2026 Santa Ana Watershed Project Authority. All Rights Reserved.</span>
+  <span><a href="https://sawpa.gov/accessibility-policy/" style="color:inherit;text-decoration:none">Accessibility</a> · <a href="https://sawpa.gov/privacy-policy/" style="color:inherit;text-decoration:none">Privacy Policy</a></span>
+</div>
+
+<script>
+// ─── LENIS ───
+const lenis = new Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+gsap.registerPlugin(ScrollTrigger);
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add(t => lenis.raf(t * 1000));
+gsap.ticker.lagSmoothing(0);
+
+// ─── HERO CANVAS — falling snow/rain particles ───
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const flakes = [];
+class Flake {
+  constructor(init = false) { this.reset(init); }
+  reset(init = false) {
+    this.x = Math.random() * canvas.width;
+    this.y = init ? Math.random() * canvas.height : -8;
+    this.size = Math.random() * 2.5 + 0.4;
+    this.speed = Math.random() * 0.8 + 0.2;
+    this.drift = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.6 + 0.1;
+    this.type = Math.random() > 0.6 ? 'snow' : 'rain';
+    if (this.type === 'rain') { this.size = Math.random() * 0.8 + 0.2; this.speed = Math.random() * 3 + 1; this.opacity *= 0.5; }
+  }
+  update() {
+    this.y += this.speed; this.x += this.drift;
+    if (this.y > canvas.height + 10) this.reset();
+  }
+  draw() {
+    ctx.save(); ctx.globalAlpha = this.opacity;
+    ctx.fillStyle = this.type === 'snow' ? 'rgba(180,210,235,0.9)' : 'rgba(140,185,215,0.7)';
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+}
+for (let i = 0; i < 180; i++) flakes.push(new Flake(true));
+function animateCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); flakes.forEach(f=>{f.update();f.draw();}); requestAnimationFrame(animateCanvas); }
+animateCanvas();
+
+// ─── CURSOR + BLOB ───
+const cdot = document.getElementById('cdot');
+const blob = document.getElementById('blob');
+let mx = window.innerWidth/2, my = window.innerHeight/2, bx = mx, by = my;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+gsap.ticker.add(() => {
+  bx += (mx - bx) * 0.07; by += (my - by) * 0.07;
+  blob.style.transform = `translate(${bx-350}px, ${by-350}px)`;
+  gsap.set(cdot, { x: mx, y: my });
+});
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => cdot.classList.add('big'));
+  el.addEventListener('mouseleave', () => cdot.classList.remove('big'));
+});
+
+// ─── STICKY NAV ───
+const nav = document.getElementById('nav');
+lenis.on('scroll', ({ scroll }) => nav.classList.toggle('scrolled', scroll > 60));
+
+// ─── HERO ENTRANCE ───
+gsap.timeline({ defaults: { ease: 'power3.out' } })
+  .to('#he', { opacity: 1, y: 0, duration: .8 }, .3)
+  .to('#hh', { opacity: 1, y: 0, duration: 1.1 }, .55)
+  .to('#hs', { opacity: 1, y: 0, duration: .9 }, .9)
+  .to('#ha', { opacity: 1, y: 0, duration: .7 }, 1.2);
+
+// ─── SCROLL REVEALS ───
+document.querySelectorAll('.reveal').forEach(el => {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { el.classList.add('in'); obs.unobserve(el); } });
+  }, { threshold: 0.1 });
+  obs.observe(el);
+});
+
+// ─── HERO CANVAS PARALLAX ───
+gsap.to('#hero-canvas', { y: -100, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+</script>
+</body>
+</html>
