@@ -3,260 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bloom Studio — Yoga & Wellness</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <title>Bloom Studio — Yoga & Wellness, Silver Lake</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --cream: #FAF7F2;
-      --warm: #F2EDE4;
-      --sage: #7C9E8B;
-      --sage2: #5C8070;
-      --terracotta: #C07A5C;
-      --dark: #2C2720;
-      --muted: #9A8E84;
-      --border: rgba(124,158,139,0.15);
-      --serif: 'Cormorant Garamond', Georgia, serif;
-      --sans: 'Jost', system-ui, sans-serif;
+      --white:  #FFFFFF;
+      --cream:  #FAF8F4;
+      --sand:   #F0EAE0;
+      --sage:   #6B8F71;
+      --dark:   #1C1917;
+      --muted:  #78716C;
+      --border: rgba(0,0,0,0.08);
+      --serif:  'Cormorant Garamond', Georgia, serif;
+      --sans:   'Inter', system-ui, sans-serif;
     }
-    html, body { background: var(--cream); color: var(--dark); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-    /* NAV */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 24px 56px; background: rgba(250,247,242,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
-    .logo { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--dark); letter-spacing: .02em; }
-    .logo em { font-style: italic; color: var(--sage2); }
-    .nav-links { display: flex; gap: 36px; list-style: none; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; transition: color .25s; }
-    .nav-links a:hover { color: var(--dark); }
-    .nav-btn { padding: 10px 26px; background: var(--sage); border: none; border-radius: 2px; color: #fff; font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; font-family: var(--sans); transition: all .25s; }
-    .nav-btn:hover { background: var(--sage2); }
+    html { scroll-behavior: smooth; }
+    body { background: var(--white); color: var(--dark); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-    /* HERO */
-    .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
-    .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 160px 64px 80px; }
-    .hero-tag { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sage); margin-bottom: 28px; opacity: 0; }
-    .hero h1 { font-family: var(--serif); font-size: clamp(52px, 5.5vw, 82px); font-weight: 300; line-height: 1.08; margin-bottom: 28px; opacity: 0; }
-    .hero h1 em { font-style: italic; color: var(--sage2); }
-    .hero-sub { font-size: 16px; color: var(--muted); line-height: 1.85; max-width: 400px; margin-bottom: 44px; font-weight: 300; opacity: 0; }
-    .hero-actions { display: flex; gap: 16px; align-items: center; opacity: 0; }
-    .btn-sage { padding: 15px 36px; background: var(--sage); color: #fff; border-radius: 2px; text-decoration: none; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; transition: all .25s; }
-    .btn-sage:hover { background: var(--sage2); transform: translateY(-2px); }
-    .btn-link { font-size: 13px; color: var(--muted); text-decoration: none; letter-spacing: .04em; border-bottom: 1px solid var(--border); padding-bottom: 2px; transition: color .25s; }
-    .btn-link:hover { color: var(--dark); }
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 48px;
+      transition: background 0.4s, padding 0.4s;
+    }
+    nav.scrolled { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 16px 48px; border-bottom: 1px solid var(--border); }
+    .logo { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--white); letter-spacing: 0.04em; transition: color 0.4s; }
+    nav.scrolled .logo { color: var(--dark); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: rgba(255,255,255,0.85); transition: color 0.3s; }
+    nav.scrolled .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--white); }
+    nav.scrolled .nav-links a:hover { color: var(--dark); }
+    .nav-cta {
+      padding: 9px 22px; border: 1px solid rgba(255,255,255,0.6); border-radius: 1px;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--white); text-decoration: none; transition: all 0.3s;
+    }
+    nav.scrolled .nav-cta { border-color: var(--sage); color: var(--sage); }
+    .nav-cta:hover { background: rgba(255,255,255,0.15); }
+    nav.scrolled .nav-cta:hover { background: var(--sage); color: var(--white); }
 
-    .hero-right { position: relative; overflow: hidden; }
-    .hero-img { width: 100%; height: 100%; background: linear-gradient(160deg, #D4C9B8 0%, #BFB09C 40%, #A89880 100%); display: flex; align-items: center; justify-content: center; }
-    .hero-img-inner { text-align: center; color: rgba(44,39,32,0.25); }
-    .hero-img-inner p { font-family: var(--serif); font-size: 18px; font-style: italic; }
-    .hero-overlay { position: absolute; bottom: 40px; left: 40px; right: 40px; background: rgba(250,247,242,0.92); backdrop-filter: blur(10px); padding: 24px 28px; border-radius: 4px; opacity: 0; }
-    .overlay-label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--sage); margin-bottom: 8px; }
-    .overlay-text { font-family: var(--serif); font-size: 20px; font-weight: 300; }
-    .overlay-meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    /* ─── HERO ─── */
+    .hero {
+      height: 100vh; min-height: 600px;
+      position: relative;
+      display: flex; align-items: flex-end;
+      padding: 80px 48px;
+      overflow: hidden;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1800&q=85');
+      background-size: cover; background-position: center 30%;
+      transform: scale(1.04);
+      animation: heroZoom 12s ease-out forwards;
+    }
+    @keyframes heroZoom { to { transform: scale(1); } }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .hero-eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 20px; animation: fadeUp 1s 0.3s both; }
+    .hero h1 {
+      font-family: var(--serif); font-size: clamp(54px, 7vw, 96px);
+      font-weight: 300; line-height: 1.0; color: var(--white);
+      margin-bottom: 32px; animation: fadeUp 1s 0.5s both;
+    }
+    .hero h1 em { font-style: italic; }
+    .hero-sub { font-size: 16px; color: rgba(255,255,255,0.8); font-weight: 300; line-height: 1.7; max-width: 420px; margin-bottom: 40px; animation: fadeUp 1s 0.7s both; }
+    .hero-actions { display: flex; gap: 16px; align-items: center; animation: fadeUp 1s 0.9s both; }
+    .btn-white { padding: 14px 36px; background: var(--white); color: var(--dark); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+    .btn-white:hover { background: var(--cream); transform: translateY(-1px); }
+    .btn-ghost { font-size: 13px; color: rgba(255,255,255,0.8); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 2px; letter-spacing: 0.04em; transition: all 0.3s; }
+    .btn-ghost:hover { color: var(--white); border-color: var(--white); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* SECTIONS */
-    .section { padding: 100px 56px; max-width: 1200px; margin: 0 auto; }
-    .section-bg { background: var(--warm); }
-    .section-full { max-width: 100%; }
-    .section-full-inner { max-width: 1200px; margin: 0 auto; padding: 100px 56px; }
-    .eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sage); margin-bottom: 20px; }
-    h2 { font-family: var(--serif); font-size: clamp(36px, 4.5vw, 58px); font-weight: 300; line-height: 1.1; margin-bottom: 24px; }
-    h2 em { font-style: italic; color: var(--sage2); }
-    .lead { font-size: 16px; color: var(--muted); line-height: 1.85; font-weight: 300; max-width: 500px; }
+    /* ─── SCROLL CUE ─── */
+    .scroll-cue { position: absolute; bottom: 36px; right: 48px; z-index: 1; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.6); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; animation: fadeUp 1s 1.2s both; }
+    .scroll-line { width: 48px; height: 1px; background: rgba(255,255,255,0.4); }
 
-    .reveal { opacity: 0; transform: translateY(40px); }
-    .reveal-left { opacity: 0; transform: translateX(-40px); }
-    .reveal-right { opacity: 0; transform: translateX(40px); }
+    /* ─── INTRO ─── */
+    .intro { padding: 120px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center; max-width: 1160px; margin: 0 auto; }
+    .intro-text .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 24px; }
+    .intro-text h2 { font-family: var(--serif); font-size: clamp(38px, 4.5vw, 60px); font-weight: 300; line-height: 1.12; margin-bottom: 28px; }
+    .intro-text h2 em { font-style: italic; }
+    .intro-text p { font-size: 16px; color: var(--muted); line-height: 1.85; font-weight: 300; margin-bottom: 16px; }
+    .intro-text a { font-size: 13px; color: var(--sage); letter-spacing: 0.06em; text-decoration: none; border-bottom: 1px solid rgba(107,143,113,0.3); padding-bottom: 2px; transition: border-color 0.3s; }
+    .intro-text a:hover { border-color: var(--sage); }
+    .intro-image { position: relative; }
+    .intro-image img { width: 100%; height: 540px; object-fit: cover; display: block; }
+    .intro-image-tag { position: absolute; bottom: -20px; left: -20px; background: var(--white); padding: 20px 24px; border: 1px solid var(--border); }
+    .intro-image-tag p { font-family: var(--serif); font-size: 18px; font-style: italic; margin-bottom: 4px; }
+    .intro-image-tag small { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
-    /* CLASSES */
-    .classes-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
-    .class-card { background: var(--cream); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: transform .3s, box-shadow .3s; }
-    .class-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(44,39,32,0.08); }
-    .class-img { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
-    .class-body { padding: 24px; }
-    .class-level { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 10px; }
-    .class-name { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 10px; }
-    .class-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
-    .class-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+    /* ─── CLASSES ─── */
+    .classes { background: var(--cream); padding: 120px 48px; }
+    .classes-header { text-align: center; margin-bottom: 72px; }
+    .classes-header .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 20px; }
+    .classes-header h2 { font-family: var(--serif); font-size: clamp(36px, 4vw, 54px); font-weight: 300; line-height: 1.1; }
+    .classes-header h2 em { font-style: italic; }
+    .classes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1160px; margin: 0 auto; }
+    .class-card { background: var(--white); }
+    .class-card img { width: 100%; height: 300px; object-fit: cover; display: block; transition: transform 0.6s ease; }
+    .class-card:hover img { transform: scale(1.03); }
+    .class-img-wrap { overflow: hidden; }
+    .class-body { padding: 28px 28px 32px; }
+    .class-tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
+    .class-body h3 { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 12px; }
+    .class-body p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 20px; font-weight: 300; }
+    .class-meta { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
 
-    /* SCHEDULE */
-    .schedule { background: var(--dark); color: var(--cream); }
-    .schedule-inner { max-width: 1200px; margin: 0 auto; padding: 100px 56px; }
-    .schedule-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 2px; margin-top: 48px; }
-    .day-col { background: rgba(255,255,255,0.04); }
-    .day-header { padding: 16px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--sage); border-bottom: 1px solid rgba(255,255,255,0.06); text-align: center; }
-    .class-slot { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; min-height: 70px; }
-    .slot-time { color: rgba(250,247,242,.4); margin-bottom: 4px; font-size: 11px; }
-    .slot-name { font-family: var(--serif); font-size: 14px; font-style: italic; color: var(--cream); }
-    .slot-teacher { color: rgba(250,247,242,.35); font-size: 11px; margin-top: 3px; }
+    /* ─── QUOTE ─── */
+    .quote-section { padding: 140px 48px; text-align: center; position: relative; overflow: hidden; }
+    .quote-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; background-attachment: fixed; }
+    .quote-bg-overlay { position: absolute; inset: 0; background: rgba(250,248,244,0.88); }
+    .quote-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+    .quote-mark { font-family: var(--serif); font-size: 100px; color: var(--sage); opacity: 0.2; line-height: 0.8; margin-bottom: 32px; }
+    .quote-section blockquote { font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); font-weight: 300; font-style: italic; line-height: 1.45; color: var(--dark); margin-bottom: 32px; }
+    .quote-author { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 
-    /* TEACHERS */
-    .teachers-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-top: 56px; }
-    .teacher-card { text-align: center; }
-    .teacher-avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 36px; font-style: italic; color: var(--cream); }
-    .teacher-name { font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 4px; }
-    .teacher-spec { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
-    .teacher-bio { font-size: 13px; color: var(--muted); line-height: 1.75; }
+    /* ─── OFFER ─── */
+    .offer { padding: 120px 48px; max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center; }
+    .offer-image img { width: 100%; height: 600px; object-fit: cover; display: block; }
+    .offer-text .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 24px; }
+    .offer-text h2 { font-family: var(--serif); font-size: clamp(36px, 4vw, 52px); font-weight: 300; line-height: 1.12; margin-bottom: 32px; }
+    .offer-text h2 em { font-style: italic; }
+    .offer-options { display: flex; flex-direction: column; gap: 24px; margin-bottom: 40px; }
+    .offer-item { padding: 24px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: baseline; }
+    .offer-item:first-child { border-top: 1px solid var(--border); }
+    .offer-name { font-family: var(--serif); font-size: 20px; font-weight: 400; }
+    .offer-detail { font-size: 13px; color: var(--muted); margin-top: 4px; font-weight: 300; }
+    .offer-price { font-family: var(--serif); font-size: 22px; font-weight: 300; color: var(--sage); white-space: nowrap; margin-left: 24px; }
+    .btn-sage { display: inline-block; padding: 15px 40px; background: var(--sage); color: var(--white); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+    .btn-sage:hover { background: #577A5C; transform: translateY(-1px); }
 
-    /* TESTIMONIALS */
-    .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 56px; }
-    .testi-card { background: var(--cream); border: 1px solid var(--border); padding: 40px; border-radius: 4px; }
-    .testi-quote { font-family: var(--serif); font-size: 20px; font-style: italic; line-height: 1.55; margin-bottom: 24px; color: var(--dark); }
-    .testi-author { font-size: 13px; color: var(--muted); }
-    .testi-author strong { color: var(--dark); display: block; margin-bottom: 2px; }
+    /* ─── FOOTER ─── */
+    footer { background: var(--dark); color: rgba(255,255,255,0.45); padding: 64px 48px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; }
+    .footer-logo { font-family: var(--serif); font-size: 22px; color: var(--white); margin-bottom: 12px; }
+    .footer-logo em { font-style: italic; }
+    footer p { font-size: 13px; line-height: 1.75; }
+    .footer-col h4 { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--white); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: 13px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { background: var(--dark); border-top: 1px solid rgba(255,255,255,0.06); padding: 20px 48px; display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.25); }
 
-    /* CTA */
-    .cta { text-align: center; padding: 120px 56px; background: var(--dark); color: var(--cream); }
-    .cta h2 { color: var(--cream); }
-    .cta .lead { color: rgba(250,247,242,0.5); margin: 0 auto 48px; }
-    .pricing-row { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 48px; }
-    .price-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 36px 32px; width: 260px; text-align: center; transition: border-color .3s; }
-    .price-card:hover { border-color: rgba(124,158,139,0.4); }
-    .price-card.feat { border-color: var(--sage); }
-    .plan-n { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--sage); margin-bottom: 16px; }
-    .plan-p { font-family: var(--serif); font-size: 52px; font-weight: 300; color: var(--cream); margin-bottom: 8px; }
-    .plan-p span { font-size: 16px; color: rgba(250,247,242,.4); }
-    .plan-d { font-size: 13px; color: rgba(250,247,242,.4); line-height: 1.6; margin-bottom: 28px; }
-    .plan-b { display: block; padding: 12px; border-radius: 2px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; transition: all .25s; }
-    .plan-b.s { background: var(--sage); color: #fff; }
-    .plan-b.s:hover { background: var(--sage2); }
-    .plan-b.o { border: 1px solid rgba(255,255,255,.15); color: var(--cream); }
-    .plan-b.o:hover { border-color: rgba(255,255,255,.4); }
-
-    footer { border-top: 1px solid rgba(255,255,255,.06); padding: 40px 56px; display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: rgba(250,247,242,.35); font-size: 13px; flex-wrap: wrap; gap: 16px; }
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 900px) {
-      nav { padding: 16px 24px; } .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; }
-      .hero-right { height: 320px; }
-      .hero-left { padding: 120px 24px 60px; }
-      .section, .section-full-inner { padding: 72px 24px; }
-      .classes-grid, .teachers-grid { grid-template-columns: repeat(2,1fr); }
-      .schedule-grid { grid-template-columns: repeat(3,1fr); }
-      .testi-grid { grid-template-columns: 1fr; }
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 24px; }
+      .intro, .offer { grid-template-columns: 1fr; gap: 48px; padding: 72px 24px; }
+      .classes { padding: 72px 24px; }
+      .classes-grid { grid-template-columns: 1fr; }
+      .quote-section { padding: 80px 24px; }
+      footer { grid-template-columns: 1fr; padding: 48px 24px; gap: 36px; }
+      .footer-bottom { padding: 16px 24px; flex-direction: column; gap: 8px; }
+      .intro-image img { height: 380px; }
+      .offer-image img { height: 400px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body>
 
-<nav>
+<nav id="nav">
   <div class="logo">Bloom <em>Studio</em></div>
   <ul class="nav-links">
-    <li><a href="#">Classes</a></li>
-    <li><a href="#">Schedule</a></li>
-    <li><a href="#">Teachers</a></li>
-    <li><a href="#">Pricing</a></li>
+    <li><a href="#classes">Classes</a></li>
+    <li><a href="#membership">Membership</a></li>
+    <li><a href="#about">About</a></li>
   </ul>
-  <button class="nav-btn">Book a Class</button>
+  <a href="#membership" class="nav-cta">Book a Class</a>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-left">
-    <p class="hero-tag" id="htag">Silver Lake, Los Angeles</p>
-    <h1 id="hh1">Move slow.<br>Breathe deep.<br><em>Come home.</em></h1>
-    <p class="hero-sub" id="hsub">Bloom Studio is a sanctuary for mindful movement. Small classes, experienced teachers, and a community that actually shows up for each other.</p>
-    <div class="hero-actions" id="hact">
-      <a href="#" class="btn-sage">Book your first class</a>
-      <a href="#" class="btn-link">View schedule →</a>
+  <div class="hero-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Silver Lake, Los Angeles</p>
+    <h1>Move slow.<br><em>Find yourself</em><br>here.</h1>
+    <p class="hero-sub">A yoga studio built for the kind of practice that changes you quietly — class by class, breath by breath.</p>
+    <div class="hero-actions">
+      <a href="#classes" class="btn-white">Explore Classes</a>
+      <a href="#membership" class="btn-ghost">First class free →</a>
     </div>
   </div>
-  <div class="hero-right">
-    <div class="hero-img">
-      <div class="hero-img-inner">
-        <p>Warm light through<br>studio windows</p>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro" id="about">
+  <div class="intro-text reveal">
+    <p class="eyebrow">Our Studio</p>
+    <h2>A place to come<br>back to <em>yourself.</em></h2>
+    <p>Bloom was built on one belief: that everyone deserves a practice that fits the life they're actually living. Not a performance. Not an Instagram pose. Just honest, consistent movement — and a community to do it with.</p>
+    <p>We keep our classes small, our teachers experienced, and our space deliberately quiet. No mirrors. No music that drowns out your own breath. Just you and the practice.</p>
+    <a href="#classes">See what we offer →</a>
+  </div>
+  <div class="intro-image reveal">
+    <img
+      src="https://images.unsplash.com/photo-1588286840040-0d96bdb54f6c?auto=format&fit=crop&w=800&q=85"
+      alt="Bright yoga studio interior with natural light"
+      onerror="this.parentElement.style.background='#E8E0D4';this.style.display='none'"
+    >
+    <div class="intro-image-tag">
+      <p>"The best hour of my week."</p>
+      <small>— Rachel M., member since 2023</small>
+    </div>
+  </div>
+</section>
+
+<!-- CLASSES -->
+<section class="classes" id="classes">
+  <div class="classes-header reveal">
+    <p class="eyebrow">What We Offer</p>
+    <h2>Classes for where<br>you are <em>today.</em></h2>
+  </div>
+  <div class="classes-grid">
+    <div class="class-card reveal">
+      <div class="class-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?auto=format&fit=crop&w=700&q=80"
+          alt="Slow flow yoga class"
+          onerror="this.parentElement.style.background='#D4C9B8';this.style.display='none';this.parentElement.style.height='300px'"
+        >
+      </div>
+      <div class="class-body">
+        <div class="class-tag">All Levels</div>
+        <h3>Slow Flow</h3>
+        <p>Breath-led movement at a pace that lets you actually settle in. The class nervous systems need.</p>
+        <div class="class-meta"><span>60 min</span><span>Max 12 students</span></div>
       </div>
     </div>
-    <div class="hero-overlay" id="hovlay">
-      <div class="overlay-label">This week's highlight</div>
-      <div class="overlay-text">Slow Flow with Maya — Sunday 9am</div>
-      <div class="overlay-meta">6 spots remaining · All levels welcome</div>
+    <div class="class-card reveal">
+      <div class="class-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1545389336-cf090694435e?auto=format&fit=crop&w=700&q=80"
+          alt="Yin yoga and restorative class"
+          onerror="this.parentElement.style.background='#C8D8C8';this.style.display='none';this.parentElement.style.height='300px'"
+        >
+      </div>
+      <div class="class-body">
+        <div class="class-tag">Beginner Friendly</div>
+        <h3>Yin & Restore</h3>
+        <p>Long-hold poses targeting connective tissue. Deeply restorative. The class you didn't know you needed.</p>
+        <div class="class-meta"><span>75 min</span><span>Max 10 students</span></div>
+      </div>
+    </div>
+    <div class="class-card reveal">
+      <div class="class-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?auto=format&fit=crop&w=700&q=80"
+          alt="Power vinyasa yoga class"
+          onerror="this.parentElement.style.background='#D4BEB0';this.style.display='none';this.parentElement.style.height='300px'"
+        >
+      </div>
+      <div class="class-body">
+        <div class="class-tag">Intermediate</div>
+        <h3>Power Vinyasa</h3>
+        <p>Build heat, strength, and focus. A challenging sequence that rewards consistency with results you'll feel.</p>
+        <div class="class-meta"><span>60 min</span><span>Max 16 students</span></div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <p class="eyebrow reveal">What we offer</p>
-  <h2 class="reveal">Practice that fits<br>your <em>life.</em></h2>
-  <p class="lead reveal">Whether you're a complete beginner or a seasoned practitioner, we have a class for where you are today — not where you think you should be.</p>
-  <div class="classes-grid">
-    <div class="class-card reveal"><div class="class-img" style="background:linear-gradient(135deg,#D4C9B8,#C2B8A8)">🌿</div><div class="class-body"><div class="class-level">All Levels</div><div class="class-name">Slow Flow Yoga</div><div class="class-desc">Breath-led movement at a pace that lets you actually settle in. Perfect for nervous systems that need to unwind.</div><div class="class-meta"><span>60 min</span><span>12 max</span></div></div></div>
-    <div class="class-card reveal"><div class="class-img" style="background:linear-gradient(135deg,#C8D8C8,#B0C4B0)">🧘</div><div class="class-body"><div class="class-level">Beginner Friendly</div><div class="class-name">Yin & Restore</div><div class="class-desc">Long-hold poses that target connective tissue. Deeply restorative. The class you didn't know you needed.</div><div class="class-meta"><span>75 min</span><span>10 max</span></div></div></div>
-    <div class="class-card reveal"><div class="class-img" style="background:linear-gradient(135deg,#D4BEB0,#C4A898)">🔥</div><div class="class-body"><div class="class-level">Intermediate</div><div class="class-name">Power Vinyasa</div><div class="class-desc">Build heat, strength, and focus. A challenging sequence that rewards consistency with results you'll feel.</div><div class="class-meta"><span>60 min</span><span>16 max</span></div></div></div>
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="quote-bg"></div>
+  <div class="quote-bg-overlay"></div>
+  <div class="quote-inner reveal">
+    <div class="quote-mark">"</div>
+    <blockquote>I've tried every yoga studio in LA. Bloom is the first one that actually felt like it was designed for humans.</blockquote>
+    <p class="quote-author">— Sarah K., Member Since 2024</p>
   </div>
 </section>
 
-<div class="schedule">
-  <div class="schedule-inner">
-    <p class="eyebrow reveal" style="color:var(--sage)">Weekly Schedule</p>
-    <h2 class="reveal" style="color:var(--cream)">Always something<br><em>to come back to.</em></h2>
-    <div class="schedule-grid">
-      <div class="day-col"><div class="day-header">Monday</div><div class="class-slot"><div class="slot-time">7:00 AM</div><div class="slot-name">Slow Flow</div><div class="slot-teacher">with Maya</div></div><div class="class-slot"><div class="slot-time">6:30 PM</div><div class="slot-name">Power Vinyasa</div><div class="slot-teacher">with Jess</div></div></div>
-      <div class="day-col"><div class="day-header">Wednesday</div><div class="class-slot"><div class="slot-time">7:00 AM</div><div class="slot-name">Yin & Restore</div><div class="slot-teacher">with David</div></div><div class="class-slot"><div class="slot-time">12:00 PM</div><div class="slot-name">Slow Flow</div><div class="slot-teacher">with Priya</div></div></div>
-      <div class="day-col"><div class="day-header">Thursday</div><div class="class-slot"><div class="slot-time">6:30 PM</div><div class="slot-name">Power Vinyasa</div><div class="slot-teacher">with Maya</div></div><div class="class-slot"><div class="slot-time">7:45 PM</div><div class="slot-name">Meditation</div><div class="slot-teacher">with David</div></div></div>
-      <div class="day-col"><div class="day-header">Saturday</div><div class="class-slot"><div class="slot-time">8:00 AM</div><div class="slot-name">Slow Flow</div><div class="slot-teacher">with Jess</div></div><div class="class-slot"><div class="slot-time">10:30 AM</div><div class="slot-name">Power Vinyasa</div><div class="slot-teacher">with Priya</div></div></div>
-      <div class="day-col"><div class="day-header">Sunday</div><div class="class-slot"><div class="slot-time">9:00 AM</div><div class="slot-name">Slow Flow</div><div class="slot-teacher">with Maya</div></div><div class="class-slot"><div class="slot-time">11:00 AM</div><div class="slot-name">Yin & Restore</div><div class="slot-teacher">with David</div></div></div>
+<!-- MEMBERSHIP -->
+<section class="offer" id="membership">
+  <div class="offer-image reveal">
+    <img
+      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=85"
+      alt="Peaceful yoga practice"
+      onerror="this.style.background='#BFB09C';this.style.backgroundImage='none'"
+    >
+  </div>
+  <div class="offer-text reveal">
+    <p class="eyebrow">Membership</p>
+    <h2>Find your<br><em>practice.</em></h2>
+    <div class="offer-options">
+      <div class="offer-item">
+        <div>
+          <div class="offer-name">Drop-In</div>
+          <div class="offer-detail">Single class, no commitment</div>
+        </div>
+        <div class="offer-price">$28</div>
+      </div>
+      <div class="offer-item">
+        <div>
+          <div class="offer-name">10-Class Pack</div>
+          <div class="offer-detail">$22/class · Valid 3 months</div>
+        </div>
+        <div class="offer-price">$220</div>
+      </div>
+      <div class="offer-item">
+        <div>
+          <div class="offer-name">Unlimited Monthly</div>
+          <div class="offer-detail">All classes, any teacher, any time</div>
+        </div>
+        <div class="offer-price">$149/mo</div>
+      </div>
     </div>
-  </div>
-</div>
-
-<section class="section">
-  <p class="eyebrow reveal">Our Teachers</p>
-  <h2 class="reveal">People who practice<br>what they <em>teach.</em></h2>
-  <div class="teachers-grid">
-    <div class="teacher-card reveal"><div class="teacher-avatar" style="background:#8FA98C">M</div><div class="teacher-name">Maya Reyes</div><div class="teacher-spec">Slow Flow · Vinyasa</div><div class="teacher-bio">500hr RYT. 12 years teaching. Trained in Bali and Mysore. Her classes are the ones people clear their calendars for.</div></div>
-    <div class="teacher-card reveal"><div class="teacher-avatar" style="background:#9E8A7C">D</div><div class="teacher-name">David Kim</div><div class="teacher-spec">Yin · Meditation</div><div class="teacher-bio">Former neuroscientist turned yoga teacher. His Yin classes have a waiting list. Enough said.</div></div>
-    <div class="teacher-card reveal"><div class="teacher-avatar" style="background:#8A9E9A">J</div><div class="teacher-name">Jess Nakamura</div><div class="teacher-spec">Power Vinyasa</div><div class="teacher-bio">Competitive athlete turned yogi. Brings athletic precision to every class without losing the heart of the practice.</div></div>
-    <div class="teacher-card reveal"><div class="teacher-avatar" style="background:#A49080">P</div><div class="teacher-name">Priya Sharma</div><div class="teacher-spec">Slow Flow · Breathwork</div><div class="teacher-bio">Ayurvedic practitioner and yoga teacher. Her classes leave you feeling like a different person — the better one.</div></div>
+    <a href="#" class="btn-sage">Try Your First Class Free</a>
   </div>
 </section>
 
-<div class="section-bg section-full">
-  <div class="section-full-inner">
-    <p class="eyebrow reveal">What students say</p>
-    <h2 class="reveal">This place changed<br>something for <em>us.</em></h2>
-    <div class="testi-grid">
-      <div class="testi-card reveal"><p class="testi-quote">"I've tried every yoga studio in LA. Bloom is the first one that felt like it was actually designed for humans. Small classes, real teachers, no pretension."</p><div class="testi-author"><strong>Rachel M.</strong>Member since 2024</div></div>
-      <div class="testi-card reveal"><p class="testi-quote">"Maya's Sunday slow flow is the only reason I get out of bed before 10am on weekends. That should tell you everything."</p><div class="testi-author"><strong>Tom K.</strong>Member since 2023</div></div>
-    </div>
-  </div>
-</div>
-
-<section class="cta">
-  <p class="eyebrow reveal" style="color:var(--sage)">Membership</p>
-  <h2 class="reveal" style="color:var(--cream)">Find your <em>practice.</em></h2>
-  <p class="lead reveal">Try your first class free. No commitment, no pressure, no upside-down pretzel required.</p>
-  <div class="pricing-row">
-    <div class="price-card reveal"><div class="plan-n">Drop-In</div><div class="plan-p">$28<span>/class</span></div><div class="plan-d">Book as you go. No commitment. Good for visitors and the commitment-averse.</div><a href="#" class="plan-b o">Book now</a></div>
-    <div class="price-card feat reveal"><div class="plan-n">Unlimited</div><div class="plan-p">$149<span>/mo</span></div><div class="plan-d">All classes, all teachers, any time. The membership that actually makes you go.</div><a href="#" class="plan-b s">Start free week</a></div>
-    <div class="price-card reveal"><div class="plan-n">10-Class Pack</div><div class="plan-p">$220<span>/pack</span></div><div class="plan-d">$22/class. Good for 3 months. For the person who likes a plan.</div><a href="#" class="plan-b o">Buy pack</a></div>
-  </div>
-</section>
-
+<!-- FOOTER -->
 <footer>
-  <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(250,247,242,.6)">Bloom <em>Studio</em></div>
-  <div>1847 Sunset Blvd, Silver Lake, CA 90026</div>
-  <div style="display:flex;gap:24px"><a href="#" style="color:rgba(250,247,242,.35);text-decoration:none">Instagram</a><a href="#" style="color:rgba(250,247,242,.35);text-decoration:none">Contact</a></div>
+  <div>
+    <div class="footer-logo">Bloom <em>Studio</em></div>
+    <p>1847 Sunset Blvd<br>Silver Lake, CA 90026<br><br>hello@bloomstudiosilverlake.com<br>(213) 555-0192</p>
+  </div>
+  <div class="footer-col">
+    <h4>Studio</h4>
+    <ul>
+      <li><a href="#">Classes</a></li>
+      <li><a href="#">Schedule</a></li>
+      <li><a href="#">Teachers</a></li>
+      <li><a href="#">Membership</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Follow Along</h4>
+    <ul>
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Newsletter</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+  </div>
 </footer>
+<div class="footer-bottom">
+  <span>© 2026 Bloom Studio. All rights reserved.</span>
+  <span>Designed in Silver Lake.</span>
+</div>
 
 <script>
-const lenis = new Lenis({ duration: 1.3, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-function raf(t) { lenis.raf(t); requestAnimationFrame(raf); } requestAnimationFrame(raf);
-gsap.registerPlugin(ScrollTrigger);
-lenis.on('scroll', ScrollTrigger.update);
-gsap.ticker.add(t => lenis.raf(t * 1000));
+// Sticky nav
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
 
-gsap.timeline({ defaults: { ease: 'power3.out' } })
-  .to('#htag', { opacity: 1, y: 0, duration: .7 }, .4)
-  .to('#hh1', { opacity: 1, y: 0, duration: 1 }, .6)
-  .to('#hsub', { opacity: 1, y: 0, duration: .8 }, .9)
-  .to('#hact', { opacity: 1, y: 0, duration: .7 }, 1.1)
-  .to('#hovlay', { opacity: 1, y: 0, duration: .8 }, 1.4);
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), 100);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
 
-gsap.utils.toArray('.reveal, .reveal-left, .reveal-right').forEach(el => {
-  const xFrom = el.classList.contains('reveal-left') ? -40 : el.classList.contains('reveal-right') ? 40 : 0;
-  gsap.to(el, { opacity: 1, y: 0, x: 0, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+// Stagger siblings
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  const siblings = el.parentElement.querySelectorAll('.reveal');
+  if (siblings.length > 1) {
+    const idx = Array.from(siblings).indexOf(el);
+    el.style.transitionDelay = `${idx * 0.1}s`;
+  }
+  observer.observe(el);
 });
 </script>
 </body>
