@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KipDesigns — Landing Page Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090B;
+      --surface: #111113;
+      --white: #FAFAFA;
+      --muted: #71717A;
+      --accent: #22D3EE;
+      --border: rgba(255,255,255,0.06);
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'Space Grotesk', system-ui, sans-serif;
+    }
+    html, body { background: var(--bg); color: var(--white); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    nav { padding: 28px 56px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+    .logo { font-family: var(--serif); font-size: 22px; }
+    .logo span { color: var(--accent); }
+    .nav-tag { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+
+    .hero { padding: 100px 56px; max-width: 1000px; }
+    .hero-eye { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; opacity: 0; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(48px, 6vw, 80px); font-weight: 400; line-height: 1.08; margin-bottom: 24px; opacity: 0; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero p { font-size: 18px; color: var(--muted); line-height: 1.75; max-width: 560px; margin-bottom: 48px; font-weight: 300; opacity: 0; }
+    .hero-meta { display: grid; grid-template-columns: repeat(3, auto); gap: 40px; opacity: 0; }
+    .meta-item { text-align: left; }
+    .meta-num { font-family: var(--serif); font-size: 36px; color: var(--accent); }
+    .meta-label { font-size: 12px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .06em; }
+
+    .projects { padding: 80px 56px; }
+    .section-eye { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 40px; opacity: 0; transform: translateY(20px); }
+    .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; opacity: 0; transform: translateY(40px); transition: border-color .3s; text-decoration: none; color: inherit; display: block; }
+    .project-card:hover { border-color: rgba(34,211,238,0.2); }
+    .project-preview { height: 280px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .preview-label { position: absolute; top: 16px; right: 16px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; background: rgba(34,211,238,0.12); color: var(--accent); padding: 4px 10px; border-radius: 2px; }
+    .project-body { padding: 28px 28px 32px; border-top: 1px solid var(--border); }
+    .project-tag { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .project-name { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 10px; }
+    .project-desc { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+    .project-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag { font-size: 11px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); }
+    .project-link { font-size: 13px; color: var(--accent); letter-spacing: .04em; }
+    .project-link:hover { text-decoration: underline; }
+
+    /* HelioFlux as showcase */
+    .featured { grid-column: 1 / -1; }
+    .featured .project-preview { height: 340px; }
+
+    .how { padding: 80px 56px; background: #0D0D0F; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .how-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; margin-top: 48px; }
+    .how-step { opacity: 0; transform: translateY(30px); }
+    .step-n { font-family: var(--serif); font-size: 48px; color: var(--accent); opacity: .15; margin-bottom: 16px; }
+    .step-h { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .step-p { font-size: 13px; color: var(--muted); line-height: 1.75; }
+
+    .cta { padding: 100px 56px; text-align: center; }
+    .cta h2 { font-family: var(--serif); font-size: clamp(36px,5vw,64px); margin-bottom: 20px; opacity: 0; }
+    .cta p { font-size: 17px; color: var(--muted); margin-bottom: 40px; opacity: 0; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; opacity: 0; }
+    .btn-a { padding: 16px 40px; background: var(--accent); color: #000; border-radius: 2px; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; transition: all .25s; }
+    .btn-a:hover { background: #06B6D4; transform: translateY(-2px); }
+    .btn-b { padding: 16px 40px; border: 1px solid var(--border); color: var(--white); border-radius: 2px; text-decoration: none; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; transition: all .25s; }
+    .btn-b:hover { border-color: rgba(255,255,255,.3); }
+
+    footer { padding: 40px 56px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; flex-wrap: wrap; gap: 16px; }
+
+    @media (max-width: 900px) {
+      nav, .hero, .projects, .how, .cta, footer { padding-left: 24px; padding-right: 24px; }
+      .project-grid { grid-template-columns: 1fr; }
+      .featured { grid-column: auto; }
+      .how-grid { grid-template-columns: repeat(2,1fr); }
+      .hero-meta { grid-template-columns: repeat(2,auto); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Kip<span>Designs</span></div>
+  <div class="nav-tag">Landing pages · 24hr delivery</div>
+</nav>
+
+<section class="hero">
+  <p class="hero-eye" id="eye">Portfolio</p>
+  <h1 id="hh1">Modern landing pages.<br><em>Delivered in 24 hours.</em></h1>
+  <p id="hsp">Every page is hand-coded — no templates, no page builders. Clean HTML/CSS/JS with smooth animations, fast load times, and zero monthly fees.</p>
+  <div class="hero-meta" id="hmeta">
+    <div class="meta-item"><div class="meta-num">24hr</div><div class="meta-label">turnaround</div></div>
+    <div class="meta-item"><div class="meta-num">$150+</div><div class="meta-label">starting price</div></div>
+    <div class="meta-item"><div class="meta-num">95+</div><div class="meta-label">lighthouse score</div></div>
+  </div>
+</section>
+
+<section class="projects">
+  <p class="section-eye">Selected work</p>
+  <div class="project-grid">
+
+    <a href="https://kellylucas314-cpu.github.io/helioflux-website/" target="_blank" class="project-card featured">
+      <div class="project-preview" style="background: linear-gradient(160deg, #04080F 0%, #07131F 50%, #0B1628 100%);">
+        <span style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:#EEF3FF;text-align:center;padding:0 32px;line-height:1.1">Your cells emit light.<br><em style="color:#00C8F0">We learned to read it.</em></span>
+        <div class="preview-label">Live site ↗</div>
+      </div>
+      <div class="project-body">
+        <div class="project-tag">Biotech Startup · Dark / Cinematic</div>
+        <div class="project-name">HelioFlux</div>
+        <div class="project-desc">Full animated landing page for a biophotonic cancer detection startup. GSAP scroll animations, Lenis smooth scroll, floating photon particle canvas, custom cursor, SplitType hero text reveal.</div>
+        <div class="project-tags"><span class="tag">GSAP</span><span class="tag">Lenis</span><span class="tag">Particles</span><span class="tag">Custom Cursor</span><span class="tag">SplitType</span><span class="tag">Dark Mode</span></div>
+        <span class="project-link">View live →</span>
+      </div>
+    </a>
+
+    <a href="portfolio/techspark/" target="_blank" class="project-card">
+      <div class="project-preview" style="background: linear-gradient(160deg, #07080D 0%, #0E1018 100%); display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;padding:0 24px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#7C3AED;margin-bottom:16px">AI Productivity · SaaS</div>
+          <div style="font-size:clamp(24px,3.5vw,42px);font-weight:800;background:linear-gradient(135deg,#A78BFA,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Syne',sans-serif">TechSpark</div>
+          <div style="font-size:14px;color:#6B7280;margin-top:12px">Your team's second brain</div>
+        </div>
+        <div class="preview-label">View demo ↗</div>
+      </div>
+      <div class="project-body">
+        <div class="project-tag">SaaS / AI Tool · Dark / Tech</div>
+        <div class="project-name">TechSpark</div>
+        <div class="project-desc">AI productivity platform landing page. Gradient typography, animated metrics, UI mockup, testimonials, 3-tier pricing. Purple/blue tech aesthetic with smooth scroll.</div>
+        <div class="project-tags"><span class="tag">GSAP</span><span class="tag">Lenis</span><span class="tag">Gradient Typography</span><span class="tag">SaaS</span><span class="tag">Pricing Table</span></div>
+        <span class="project-link">View demo →</span>
+      </div>
+    </a>
+
+    <a href="portfolio/bloom/" target="_blank" class="project-card">
+      <div class="project-preview" style="background: linear-gradient(160deg, #E8E0D4 0%, #D4C9B8 100%); display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;padding:0 24px">
+          <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#7C9E8B;margin-bottom:16px;font-family:'Jost',sans-serif">Yoga Studio · Warm / Minimal</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,52px);font-weight:300;color:#2C2720">Bloom <em>Studio</em></div>
+          <div style="font-size:14px;color:#9A8E84;margin-top:12px;font-family:'Jost',sans-serif">Move slow. Breathe deep.</div>
+        </div>
+        <div class="preview-label" style="background:rgba(124,158,139,0.15);color:#7C9E8B;border:1px solid rgba(124,158,139,0.3)">View demo ↗</div>
+      </div>
+      <div class="project-body">
+        <div class="project-tag">Local Business · Wellness / Warm</div>
+        <div class="project-name">Bloom Studio</div>
+        <div class="project-desc">Yoga and wellness studio landing page. Warm cream palette, Cormorant Garamond serif typography, class schedule, teacher profiles, membership pricing. Elegant and minimal.</div>
+        <div class="project-tags"><span class="tag">GSAP</span><span class="tag">Lenis</span><span class="tag">Serif Typography</span><span class="tag">Wellness</span><span class="tag">Schedule</span></div>
+        <span class="project-link">View demo →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section class="how">
+  <p class="section-eye" style="opacity:1;transform:none">How it works</p>
+  <div class="how-grid">
+    <div class="how-step"><div class="step-n">1</div><div class="step-h">You fill out the intake form</div><div class="step-p">5 minutes. Tell me your brand, your goal, your copy. Attach a logo if you have one.</div></div>
+    <div class="how-step"><div class="step-n">2</div><div class="step-h">I start building immediately</div><div class="step-p">No meetings. No back-and-forth. I work from your brief and deliver a live preview link.</div></div>
+    <div class="how-step"><div class="step-n">3</div><div class="step-h">You review and request changes</div><div class="step-p">Up to 2 revision rounds included. Send notes, I implement within hours.</div></div>
+    <div class="how-step"><div class="step-n">4</div><div class="step-h">You get the files + hosting</div><div class="step-p">Clean HTML/CSS/JS yours forever. Deploy on GitHub Pages free, or your own server.</div></div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2 id="cta-h">Ready to fix your landing page?</h2>
+  <p id="cta-p">Starting at $150. Delivered in 24 hours. No monthly fees, no templates, no nonsense.</p>
+  <div class="cta-btns" id="cta-b">
+    <a href="https://www.upwork.com" class="btn-a" target="_blank">Hire on Upwork</a>
+    <a href="mailto:kelly.lucas@helioflux.co" class="btn-b">Send a message</a>
+  </div>
+</section>
+
+<footer>
+  <div style="font-family:'DM Serif Display',serif;font-size:18px">Kip<span style="color:#22D3EE">Designs</span></div>
+  <div>Built with code. Delivered in 24 hours.</div>
+  <div>kelly.lucas@helioflux.co</div>
+</footer>
+
+<script>
+const lenis = new Lenis({ duration: 1.2 });
+function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+gsap.timeline({ defaults: { ease: 'power3.out' } })
+  .to('#eye', { opacity: 1, y: 0, duration: .6 }, .3)
+  .to('#hh1', { opacity: 1, y: 0, duration: .9 }, .5)
+  .to('#hsp', { opacity: 1, y: 0, duration: .7 }, .8)
+  .to('#hmeta', { opacity: 1, y: 0, duration: .6 }, 1.0);
+
+gsap.utils.toArray('.section-eye').forEach(el => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } }));
+gsap.utils.toArray('.project-card').forEach((el,i) => gsap.to(el, { opacity: 1, y: 0, duration: .8, delay: i * .08, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } }));
+gsap.utils.toArray('.how-step').forEach((el,i) => gsap.to(el, { opacity: 1, y: 0, duration: .7, delay: i * .1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } }));
+gsap.timeline({ scrollTrigger: { trigger: '.cta', start: 'top 80%' } })
+  .to('#cta-h', { opacity: 1, y: 0, duration: .8, ease: 'power3.out' })
+  .to('#cta-p', { opacity: 1, y: 0, duration: .7, ease: 'power3.out' }, .2)
+  .to('#cta-b', { opacity: 1, y: 0, duration: .6, ease: 'power3.out' }, .4);
+</script>
+</body>
+</html>
